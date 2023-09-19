@@ -1,0 +1,28 @@
+var collectionNames = db.getCollectionNames();
+
+
+var collectionNames = [ "pm.pipeline_rt" ];
+
+var stats = [];
+
+var totalDiskSize = 0;
+var totalIndexSize = 0;
+
+collectionNames.forEach(function (n) {
+	stats.push(db[n].stats());
+});
+
+for (var c in stats) {
+	// skip views
+	if (!stats[c]["ns"]) 
+		continue;
+	totalDiskSize = totalDiskSize + stats[c]["storageSize"];
+	totalIndexSize = totalIndexSize + stats[c]["totalIndexSize"];
+	print(stats[c]["ns"].padEnd(40) + ": " + (''+stats[c]["size"]).padEnd(15) + 
+		" (" + formatBytes (stats[c]["storageSize"]).padStart(8) + ")" + 
+		" (" + formatBytes (stats[c]["totalIndexSize"]).padStart(8) + ")");
+	
+}
+
+print("total Disk Size: " + formatBytes(totalDiskSize));
+print("total Index Size: " + formatBytes(totalIndexSize));
