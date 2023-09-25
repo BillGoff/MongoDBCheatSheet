@@ -1,0 +1,51 @@
+task:
+db.pm.pipeline_rt.explain("executionStats").aggregate([
+{	$match: {
+		"org_snode_id": "5be4a4cded5edc0017b9aa70",
+		"create_time": { $lte: new Date(ISODate().setDate(ISODate().getDate())) },
+		"poll_time_stamp": { $gte: new Date(ISODate().setDate(ISODate().getDate()-14)) },
+		"pipe_invoker": { $in: [ "triggered", "scheduled", "always_on" ] },
+"state": { $in: [  "Failed", "Completed", "Started" ] },
+		"invoker_name": "regex_search",
+		"search": "regex_search",
+		"user_id": "test@snaplogic.com"
+	}
+},{	$project: { 
+		"class_id": 1, "invoker_name": 1, "pipe_invoker": 1,
+		"errorFlg": { 
+			$cond: { 
+				if: { $eq: [ "$state", "Failed" ] },
+				then: 1,
+				else: 0
+			}
+		},
+		"successFlg": {
+			$cond: {
+				if: { $eq: [ "$state", "Completed" ] },
+				then: 1,
+				else: 0
+			}
+		},
+		"startedFlg": {
+			$cond: {
+				if: { $eq: [ "$state", "Started" ] },
+				then: 1,
+				else: 0
+			}
+		}
+	}
+},{	$sort: { "class_id": 1 }
+},{	$group: {
+		_id: "$class_id",
+		"invoker_name": { $last: "$invoker_name" },
+		"pipe_invoker": { $last: "$pipe_invoker" },
+		"error": { $sum: { $cond: [ { $gt: [ "$errorFlg", 0 ] }, "$errorFlg", 0 ] } },
+		"success": { $sum: { $cond: [ { $gt: [ "$successFlg", 0 ] }, "$successFlg", 0 ] } },
+		"started": { $sum: { $cond: [ { $gt: [ "$startedFlg", 0 ] }, "$startedFlg", 0 ] } }
+	}
+},{	$sort: { "invoker_name": 1 } 
+},{	$skip: 0 }, 
+{	$limit : 25
+}
+])
+

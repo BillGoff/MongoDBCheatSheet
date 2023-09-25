@@ -2,12 +2,18 @@ var stats = [];
 var totalDiskSize = 0;
 var totalIndexSize = 0;
 
-var collectionNames = db.getCollectionNames();
-var collectionNames = [ "pm.pipeline_rt" ];
+var dbResults = db.adminCommand({ listDatabases: 1 });
 
-collectionNames.forEach(function (n) {
-	stats.push(db[n].stats());
+dbResults.databases.forEach(function (dbResult) {
+	var dbName = dbResult.name;
+	var collectionNames = db.getSiblingDB(dbName).getCollectionNames();
+	
+	collectionNames.forEach(function (collectionName) {
+//		print (dbName + " : " + collectionName);
+		stats.push(db.getSiblingDB(dbName)[collectionName].stats());
+	});
 });
+
 
 for (var c in stats) {
 	// skip views
