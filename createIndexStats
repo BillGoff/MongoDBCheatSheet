@@ -1,0 +1,1 @@
+db.currentOp(true).inprog.forEach(function(op){ if(op.msg!==undefined) print(op.command.indexes[0].name,op.msg) })
