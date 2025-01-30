@@ -1,0 +1,93 @@
+
+db.getSiblingDB("slserver").pm.pipeline_rt.createIndex(
+{	"state": 1, 
+	"poll_time_stamp": 1 
+},{	name: 'state_1_poll_time_stamp_1',
+	background: true
+});
+
+db.getSiblingDB("slserver").pm.pipeline_rt.createIndex(
+{	"runtime_path_id": 1, 
+	"state": 1, 
+	"poll_time_stamp": 1 
+},{	name: 'runtime_path_id_1_state_1_poll_time_stamp_1',
+	background: true
+});
+
+db.getSiblingDB("slserver").pm.pipeline_rt.createIndex(
+{	"project_snode_id": 1, 
+	"create_time": -1 
+},{	name: 'project_snode_id_1_create_time_-1',
+	background: true
+});
+
+db.getSiblingDB("slserver").pm.pipeline_rt.createIndex(
+{	"delete_time": 1 
+},{	name: 'delete_time_1',
+	background: true,
+	expireAfterSeconds: 0
+});
+
+db.getSiblingDB("slserver").pm.pipeline_rt.createIndex(
+{	"org_snode_id": 1,
+	"poll_time_stamp": 1,
+	"create_time": -1,
+	"state": 1,
+	"class_id": 1,
+	"pipe_invoker": 1,
+	"invoker_snode_id": 1,
+	"job_trigger": 1,
+	"has_errors": 1,
+	"has_warnings": 1
+},{	name: 'runtime_summary_2',
+	background: true
+});
+
+db.getSiblingDB("slserver").pm.pipeline_rt.createIndex(
+{	"org_snode_id": 1,
+	"state": 1,
+	"pipe_invoker": 1,
+	"user_id": 1,
+	"label": 1,
+	"snaplex_label": 1,
+	"duration": 1,
+	"documents_count": 1,
+	"create_time": -1
+},{	name: 'search_sort2',
+	background: true
+});
+
+db.getSiblingDB("slserver").pm.pipeline_rt.createIndex(
+{	"parent_ruuid": 1, 
+	"state": 1, 
+	"child_index": 1 
+},{	name: 'parent_ruuid_1_state_1_child_index_1',
+	background: true
+});
+
+db.getSiblingDB("slserver").pm.pipeline_rt.createIndex(
+{	"org_snode_id": 1,
+	"class_id": 1,
+	"invoker_snode_id": 1,
+	"state": 1,
+	"create_time": -1,
+	"poll_time_stamp": 1,
+	"pipe_invoker": 1,
+	"invoker_name": 1,
+	"has_errors": 1,
+	"label": 1,
+	"user_id": 1,
+	"project_snode_id": 1,
+	"search": 1
+},{	name: 'runtime_aggregation',
+	background: true
+});
+
+db.getSiblingDB("slserver").pm.pipeline_rt.createIndex(
+{	"project_snode_id": 1, 
+	"org_snode_id": 1, 
+	"create_time": -1, 
+	"state": 1 
+},{	name: 'dashboardQuery',
+	background: true
+});

@@ -1,5 +1,12 @@
+
+
 db.pm.pipeline_rt.aggregate([
 {       $indexStats: { }
 },{     $match: { "name": { $in :  [ "dashboardQuery", "project_snode_id_1_create_time_-1" ] } }
-},{     $project: { "name": 1, "accesses": 1 }
+},{     $project: {
+                "name": 1,
+                "spec": 1,
+                "accesses.ops" : 1
+        }
+},{     $sort : { "accesses.ops": -1 }
 }]).pretty()

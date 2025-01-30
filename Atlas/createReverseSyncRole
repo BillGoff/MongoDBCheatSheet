@@ -1,0 +1,25 @@
+//Create Custom Role.
+  
+db.createRole(
+{	"role": "reverseSync",
+	"privileges": [
+		{	"resource": { cluster: true },
+			"actions": [ 'bypassWriteBlockingMode', 'setUserWriteBlockMode' ]
+		}
+	],
+	roles: []
+})
+
+
+//Create mongoSync User.
+
+db.createUser(
+{	user: 'mongosync',
+	pwd: passwordPrompt(),
+	roles: [
+		{	role: 'root', db: 'admin' },
+		{	role: 'reverseSync', db: 'admin' }
+	]
+});
+  
+  

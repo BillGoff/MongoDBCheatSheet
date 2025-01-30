@@ -7,35 +7,36 @@ function numberWithCommas(x) {
     return x;
 }
 
-var distinctOrgSnodeIds = db.pm.pipeline_rt.distinct("org_snode_id");
-var orgSnodeIdCount = []
+var distinctValues = db.pm.pipeline_rt.distinct("org_snode_id");
+var distinctValuesCount = []
 var totalCount = 0;
 
-distinctOrgSnodeIds.forEach(function(orgSnodeId) {	
-	print("Collection count for " + orgSnodeId);
-	var count = db.pm.pipeline_rt.count( { "org_snode_id": orgSnodeId });
+distinctValues.forEach(function(distinctValue) {	
+	print("Collection count for " + distinctValue);
+	var count = db.pm.pipeline_rt.count( { "org_snode_id": distinctValue });
 	totalCount = totalCount + count;
-	orgSnodeIdCount.push({ "org_snode_id": orgSnodeId, "count": count })
+	distinctValuesCount.push({ "org_snode_id": distinctValue, "count": count })
 }); 
 
-// Sort on org_snode_id or count
+// Sort on distinctValue or count
 var reverse = true;
 var sortField = "count";
-orgSnodeIdCount.sort(function(a, b) {
+distinctValuesCount.sort(function(a, b) {
 	comparison = a[sortField] - b[sortField];
 	if (isNaN(comparison)) comparison = a.collection.localeCompare(b.collection);
 	if (reverse) comparison *= -1;
 	return comparison;
 }); undefined;
 
+print("Distinct Values : " + numberWithCommas(distinctValues.length));
 
 // Print the collection stats
-orgSnodeIdCount.forEach(function(collection) {
+distinctValuesCount.forEach(function(collection) {
 //	print(JSON.stringify(collection));
 	print(collection.org_snode_id + " : " + numberWithCommas(collection.count));
 });
 
-var average = Math.ceil(totalCount / distinctOrgSnodeIds.length);
+var average = Math.ceil(totalCount / distinctValues.length);
 print("average count: " + numberWithCommas(average));
 
 	
