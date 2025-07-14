@@ -84,10 +84,11 @@ db.getSiblingDB("slserver").pm.pipeline_rt.createIndex(
 });
 
 db.getSiblingDB("slserver").pm.pipeline_rt.createIndex(
-{	"project_snode_id": 1, 
-	"org_snode_id": 1, 
-	"create_time": -1, 
-	"state": 1 
+{	"project_snode_id": 1,
+	"org_snode_id": 1,
+	"state": 1,
+	"parent_ruuid": 1,
+	"create_time": -1
 },{	name: 'dashboardQuery',
 	background: true
 });

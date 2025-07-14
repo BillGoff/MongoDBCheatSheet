@@ -34,31 +34,30 @@ function validatePort () {
 
 # this method is used to calculate how long something took to happen.
 function calculateTime() {
-        date1=$1
-        date2=$2
+	date1=$1
+	date2=$2
 
-        echo "comparing $date1 to $date2"
-        date1_seconds=$(date -d "$date1" +%s)
-        date2_seconds=$(date -d "$date2" +%s)
+	echo "comparing $date1 to $date2"
+	date1_seconds=$(date -d "$date1" +%s)
+	date2_seconds=$(date -d "$date2" +%s)
 
-        if [[ -z "$date1_seconds" || -z "$date2_seconds" ]]; then
-                echo "Invalid date format. Use 'YYYY-MM-DD HH:MM:SS'"
-                exit 1
-        fi
+	if [[ -z "$date1_seconds" || -z "$date2_seconds" ]]; then
+		echo "Invalid date format. Use 'YYYY-MM-DD HH:MM:SS'"
+		exit 1
+	fi
 
-        diff_seconds=$((date2_seconds - date1_seconds))
+	diff_seconds=$((date2_seconds - date1_seconds))
+	if [[ "$diff_seconds" -lt 0 ]]; then
+		diff_seconds=$((-diff_seconds))
+	fi
 
-        if [[ "$diff_seconds" -lt 0 ]]; then
-                diff_seconds=$((-diff_seconds))
-        fi
+	days=$((diff_seconds / (60 * 60 * 24)))
+	hours=$(( (diff_seconds % (60 * 60 * 24)) / (60 * 60) ))
+	minutes=$(( (diff_seconds % (60 * 60)) / 60 ))
+	seconds=$((diff_seconds % 60))
 
-        days=$((diff_seconds / (60 * 60 * 24)))
-        hours=$(( (diff_seconds % (60 * 60 * 24)) / (60 * 60) ))
-        minutes=$(( (diff_seconds % (60 * 60)) / 60 ))
-        seconds=$((diff_seconds % 60))
-
-        msg="$days days, $hours hours, $minutes minutes, $seconds seconds"
-        echo $msg
+	msg="$days days, $hours hours, $minutes minutes, $seconds seconds"
+	echo $msg
 }
 
 # This function does the actual checking the progress (making sure we can commit), then commits, then waits for the commit flag
@@ -110,13 +109,18 @@ function progressCommitReverse () {
 					writeDate=$(date)
 					calculateTime "$startDate" "$writeDate"
 					writeDuration=$msg
+					echo "************************************************************************"
 					echo "It took $writeDuration to be able to write"
+					echo "************************************************************************"
+					echo "It took $writeDuration to be able to write" >> mongoSync.$mongoSyncPort.log
 					canWrite=true
 				fi
 			fi
 
 			if [[ $progressReport =~ '"state":"COMMITTED"' ]]; then
 				committed=true;
+			else
+				sleep 1;
 			fi
 		done
 
@@ -166,3 +170,4 @@ else
 	wait
 	echo "all ports processed!"
 fi
+
