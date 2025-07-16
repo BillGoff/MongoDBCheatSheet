@@ -9,17 +9,16 @@ var dbResults = db.adminCommand({ listDatabases: 1 });
 dbResults.databases.forEach(function(dbResult) {
 	var dbName = dbResult.name;
 
-	if (( dbName == "sldb" )) {	
-//	if ((dbName != "admin" ) && (dbName != "config") && 
-//		(dbName != "local") && (dbName != "mongosync_reserved_for_internal_use")) {
+//	if (( dbName == "slserver" )) {	
+	if ((dbName != "admin" ) && (dbName != "config") && 
+		(dbName != "local") && (dbName != "mongosync_reserved_for_internal_use")) {
 		var collectionNames = db.getSiblingDB(dbName).getCollectionNames();
 
 		collectionNames.forEach(function(collectionName) {
 //			if (! (collectionName.startsWith("mongosync.tmp"))) {
 //			if (collectionName == "joblog") {
-			if (collectionName.startsWith("api")) {
 				stats.push(db.getSiblingDB(dbName)[collectionName].stats());
-			}
+//			}
 		});
 	}
 });
